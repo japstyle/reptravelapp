@@ -33,6 +33,13 @@ if __name__ == '__main__':
     (DATA_DIR / 'stations.json').write_text(json.dumps(stations, ensure_ascii=False, indent=2), encoding='utf-8')
     print('Saved data/stations.json')
 
+    print('Fetching odpt:StationTimetable (sample)...')
+    # Fetch a sample of station timetable data for major stations
+    # In a real scenario, this might need to be more comprehensive or fetched on-demand.
+    station_timetables = fetch('odpt:StationTimetable', params={'odpt:station': 'odpt.Station:TokyoMetro.Marunouchi.Tokyo'})
+    (DATA_DIR / 'station_timetables_sample.json').write_text(json.dumps(station_timetables, ensure_ascii=False, indent=2), encoding='utf-8')
+    print('Saved data/station_timetables_sample.json')
+
     # Create starter transfers.json if not exists
     transfers_path = DATA_DIR / 'transfers.json'
     if not transfers_path.exists():

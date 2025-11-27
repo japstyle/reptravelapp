@@ -16,6 +16,24 @@ HELL_STATIONS = {
     "Iidabashi": 45,
 }
 
+# Placeholder for fare calculation (to be expanded with actual data)
+def calculate_fare(segment: dict, fare_type: str = "ic", seat_type: str = "unreserved") -> float:
+    # This is a simplified placeholder. Actual implementation would involve:
+    # 1. Looking up base fares for the segment's line/distance.
+    # 2. Adjusting for IC card vs. cash (IC usually slightly cheaper).
+    # 3. Adding surcharges for reserved seats or green cars.
+    base_fare = segment.get("base_fare", 200) # Example base fare
+    
+    if fare_type == "cash":
+        base_fare *= 1.05 # Example cash penalty
+    
+    if seat_type == "reserved":
+        base_fare += 500 # Example reserved seat surcharge
+    elif seat_type == "green":
+        base_fare += 1000 # Example green car surcharge
+        
+    return base_fare
+
 # Load transfer database
 _transfer_db = None
 
@@ -44,7 +62,7 @@ def find_transfer_data(station: str, from_line: str, to_line: str) -> Optional[D
             return t
     return None
 
-def calculate_transfer_time(transfer_data: Dict) -> float:
+def calculate_transfer_time(transfer_data: Dict, walking_speed: str = "normal") -> float:
     """
     Calculate realistic transfer time based on physical characteristics.
     
@@ -65,8 +83,15 @@ def calculate_transfer_time(transfer_data: Dict) -> float:
     confusion_level = transfer_data.get('confusion_level', 0)
     platform_type = transfer_data.get('platform_type', 'different_platform')
     
+    # Adjust walking speed multiplier
+    walk_multiplier = 1.0
+    if walking_speed == "fast":
+        walk_multiplier = 0.8 # 20% faster
+    elif walking_speed == "slow":
+        walk_multiplier = 1.2 # 20% slower
+
     # Base walking time (seconds)
-    base_walk = (distance_m / 60) * 60  # 60m/min = 1m/s
+    base_walk = (distance_m / 60) * 60 * walk_multiplier # 60m/min = 1m/s
     
     # Vertical movement
     floor_penalty = floors * 15
@@ -95,7 +120,7 @@ def calculate_transfer_time(transfer_data: Dict) -> float:
     
     return max(30, total)  # Minimum 30 seconds for any transfer
 
-def score_segment(segment: dict) -> dict:
+def score_segment(segment: dict, walking_speed: str = "normal") -> dict:
     """
     A segment is expected to contain:
     - duration_seconds: int (riding time)
@@ -131,12 +156,20 @@ def score_segment(segment: dict) -> dict:
         transfer_data = find_transfer_data(from_s, from_line, to_line)
         if transfer_data:
             # Use detailed transfer calculation
-            transfer_penalty = calculate_transfer_time(transfer_data)
+            transfer_penalty = calculate_transfer_time(transfer_data, walking_speed)
         else:
             # Fall back to legacy calculation
             walk = segment.get("walk_seconds", 120)  # Default 2min transfer
             stairs = segment.get("stairs", 1)
-            walk_penalty = walk * 1.8
+            
+            # Adjust walking penalty based on walking_speed
+            walk_multiplier = 1.0
+            if walking_speed == "fast":
+                walk_multiplier = 0.8
+            elif walking_speed == "slow":
+                walk_multiplier = 1.2
+            
+            walk_penalty = walk * 1.8 * walk_multiplier
             if stairs == 1:
                 stairs_penalty = 20
             elif stairs >= 2:
@@ -169,21 +202,32 @@ def score_segment(segment: dict) -> dict:
     }
 
 
-def score_route(route: dict) -> dict:
+def score_route(route: dict, fare_type: str = "ic", seat_type: str = "unreserved", walking_speed: str = "normal") -> dict:
     """
     Expects:
     { "segments": [ { ... }, { ... } ] }
     """
     segments = route.get("segments", [])
     breakdown = []
-    total = 0
+    total_seconds = 0
+    total_fare = 0
 
     for seg in segments:
-        result = score_segment(seg)
+        result = score_segment(seg, walking_speed=walking_speed)
+        # Placeholder: Add fare calculation to segment scoring
+        # In a real scenario, fare would be calculated per ride segment
+        if seg.get("type") == "ride":
+            fare = calculate_fare(seg, fare_type, seat_type)
+            result["fare"] = fare
+            total_fare += fare
+        else:
+            result["fare"] = 0
+
         breakdown.append(result)
-        total += result["total"]
+        total_seconds += result["total"]
 
     return {
-        "total_seconds": total,
+        "total_seconds": total_seconds,
+        "total_fare": total_fare,
         "segments": breakdown
     }

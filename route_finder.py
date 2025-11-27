@@ -322,7 +322,7 @@ def _generate_route_name(segments: List[Dict]) -> str:
     else:
         return f"Via {transfer_str} ({len(transfers)} transfers)"
 
-def find_routes(origin: str, destination: str) -> List[Dict[str, Any]]:
+def find_routes(origin: str, destination: str, date: str | None = None, time: str | None = None, time_type: str = "departure") -> List[Dict[str, Any]]:
     """
     Find multiple route alternatives between origin and destination.
     
@@ -331,7 +331,9 @@ def find_routes(origin: str, destination: str) -> List[Dict[str, Any]]:
     """
     _load_network()
     
-    raw_routes = _bfs_find_routes(origin, destination, max_routes=5, max_transfers=3)
+    raw_routes = _bfs_find_routes(origin, destination, date, time, time_type, max_routes=5, max_transfers=3)
+
+def _bfs_find_routes(origin: str, destination: str, date: str | None = None, time: str | None = None, time_type: str = "departure", max_routes: int = 5, max_transfers: int = 2) -> List[List[Tuple[str, str, str]]]:
     
     if not raw_routes:
         return _fallback_routes(origin, destination)

@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="RouteOpt">
     <link rel="manifest" href="/static/manifest.json">
-    <title>Tokyo Route Optimizer - Transfer-Aware Routes</title>
+    <title>Tokyo Transit Pro</title>
     <style>
         * {
             box-sizing: border-box;
@@ -680,7 +680,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>{{ icons.train(size=28, class='header-icon') }} Transfer-Aware Route Comparison</h1>
+            <h1>{{ icons.train(size=28, class='header-icon') }} Tokyo Transit Pro</h1>
             <p class="subtitle">{{ _('find_best_route') }}</p>
 
             <form class="search-form" method="get" id="route-form">
@@ -693,6 +693,17 @@
                            aria-expanded="false"
                            role="combobox">
                     <div class="autocomplete-dropdown" id="origin-dropdown" role="listbox"></div>
+                </div>
+
+                <div class="autocomplete-container">
+                    <input type="text" name="transit" id="transit-input"
+                           placeholder="{{ _('transit_station_placeholder') }} (Optional)"
+                           value="{{ transit or '' }}"
+                           autocomplete="off"
+                           aria-autocomplete="list"
+                           aria-expanded="false"
+                           role="combobox">
+                    <div class="autocomplete-dropdown" id="transit-dropdown" role="listbox"></div>
                 </div>
                 
                 <div class="autocomplete-container">
@@ -708,6 +719,34 @@
                 
                 <button type="submit">{{ _('compare_routes') }}</button>
             </form>
+
+            <div class="search-options" style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+                <input type="date" name="date" id="date-input" value="{{ date }}" class="form-control" style="flex: 1; min-width: 150px;">
+                <input type="time" name="time" id="time-input" value="{{ time }}" class="form-control" style="flex: 1; min-width: 100px;">
+                <select name="time_type" id="time-type-select" class="form-control" style="flex: 1; min-width: 120px; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px;">
+                    <option value="departure" {% if time_type == 'departure' %}selected{% endif %}>{{ _('depart_at') }}</option>
+                    <option value="arrival" {% if time_type == 'arrival' %}selected{% endif %}>{{ _('arrive_by') }}</option>
+                </select>
+                <select name="fare_type" id="fare-type-select" class="form-control" style="flex: 1; min-width: 120px; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px;">
+                    <option value="ic" {% if fare_type == 'ic' %}selected{% endif %}>{{ _('ic_card') }}</option>
+                    <option value="cash" {% if fare_type == 'cash' %}selected{% endif %}>{{ _('cash_fare') }}</option>
+                </select>
+                <select name="seat_type" id="seat-type-select" class="form-control" style="flex: 1; min-width: 120px; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px;">
+                    <option value="unreserved" {% if seat_type == 'unreserved' %}selected{% endif %}>{{ _('unreserved') }}</option>
+                    <option value="reserved" {% if seat_type == 'reserved' %}selected{% endif %}>{{ _('reserved_seat') }}</option>
+                    <option value="green" {% if seat_type == 'green' %}selected{% endif %}>{{ _('green_car') }}</option>
+                </select>
+                <select name="walking_speed" id="walking-speed-select" class="form-control" style="flex: 1; min-width: 120px; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px;">
+                    <option value="normal" {% if walking_speed == 'normal' %}selected{% endif %}>{{ _('normal_walk') }}</option>
+                    <option value="fast" {% if walking_speed == 'fast' %}selected{% endif %}>{{ _('fast_walk') }}</option>
+                    <option value="slow" {% if walking_speed == 'slow' %}selected{% endif %}>{{ _('slow_walk') }}</option>
+                </select>
+                <select name="sort_order" id="sort-order-select" class="form-control" style="flex: 1; min-width: 150px; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px;">
+                    <option value="fastest" {% if sort_order == 'fastest' %}selected{% endif %}>{{ _('fastest_arrival') }}</option>
+                    <option value="transfers" {% if sort_order == 'transfers' %}selected{% endif %}>{{ _('fewest_transfers') }}</option>
+                    <option value="cheapest" {% if sort_order == 'cheapest' %}selected{% endif %}>{{ _('cheapest_fare') }}</option>
+                </select>
+            </div>
             
             <div class="station-hint" style="margin-top: 10px; font-size: 12px; color: #666;">
                 Available stations include: Tokyo, Shinjuku, Shibuya, Ikebukuro, Ueno, Yokohama, and more.
@@ -746,6 +785,9 @@
                         <div class="felt-time">{{ route.total_minutes }} min</div>
                         <div class="actual-time">
                             ({{ _('actual_time') }}: {{ route.actual_ride_minutes|round(1) }} min)
+                            {% if route.score.total_fare is not none %}
+                            <br>{{ _('fare') }}: ¥{{ route.score.total_fare|round(0)|int }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -799,6 +841,9 @@
                             {{ (seg.duration_seconds / 60)|round(0)|int }} min
                             {% else %}
                             {{ (route.score.segments[loop.index0].transfer_penalty / 60)|round(1) }} min
+                            {% if walking_speed %}
+                            <div style="font-size: 0.8em; color: #999;">({{ walking_speed }} walk)</div>
+                            {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -816,6 +861,12 @@
                             <span class="score-label">{{ _('transfer_penalties') }}:</span>
                             <span class="score-value">+{{ (total_transfer/60)|round(1) }} min</span>
                         </div>
+                        {% if route.score.total_fare is not none %}
+                        <div class="score-item">
+                            <span class="score-label">{{ _('estimated_fare') }} ({{ fare_type }} / {{ seat_type }}):</span>
+                            <span class="score-value">¥{{ route.score.total_fare|round(0)|int }}</span>
+                        </div>
+                        {% endif %}
                         {% if total_hell > 0 %}
                         <div class="score-item">
                             <span class="score-label">{{ _('busy_station_penalty') }}:</span>
@@ -1006,6 +1057,7 @@
         
         // Initialize autocomplete for both inputs
         setupAutocomplete('origin-input', 'origin-dropdown');
+        setupAutocomplete('transit-input', 'transit-dropdown');
         setupAutocomplete('destination-input', 'destination-dropdown');
         
         // Register service worker for PWA support

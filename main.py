@@ -136,7 +136,7 @@ from i18n import get_translator, get_best_match_language
 # ... (existing code) ...
 
 @app.get("/route-compare")
-def route_compare_page(request: Request, origin: str | None = None, destination:str | None = None, accept_language: str | None = Header(None)):
+def route_compare_page(request: Request, origin: str | None = None, destination:str | None = None, transit: str | None = None, date: str | None = None, time: str | None = None, time_type: str = "departure", fare_type: str = "ic", seat_type: str = "unreserved", walking_speed: str = "normal", sort_order: str = "fastest", accept_language: str | None = Header(None)):
     """Main route comparison UI."""
     routes = []
     scored_routes = []
@@ -168,7 +168,25 @@ def route_compare_page(request: Request, origin: str | None = None, destination:
                 error_message = _("error_origin_destination_same")
             else:
                 # Find route alternatives
-                routes = find_routes(origin, destination)
+                if transit and transit.strip():
+                    transit_normalized = _find_station(transit)
+                    if not transit_normalized:
+                        error_message = _("error_station_not_found", station_name=transit)
+                    else:
+                        routes_to_transit = find_routes(origin, transit_normalized, date, time, time_type)
+                        routes_from_transit = find_routes(transit_normalized, destination, date, time, time_type)
+                        
+                        # Combine routes (simplified for now - more complex merging might be needed)
+                        # This will create a cartesian product of routes which can be large. 
+                        # For a real application, a more sophisticated merging strategy might be required.
+                        for r1 in routes_to_transit:
+                            for r2 in routes_from_transit:
+                                combined_segments = r1['segments'] + r2['segments']
+                                combined_name = f"{r1['name']} via {transit} to {r2['name']}"
+                                routes.append({'name': combined_name, 'segments': combined_segments})
+
+                else:
+                    routes = find_routes(origin, destination, date, time, time_type)
                 
                 # Get real-time train information
                 train_info = get_train_information_dict()
@@ -189,7 +207,7 @@ def route_compare_page(request: Request, origin: str | None = None, destination:
 
                 # Score each route
                 for route in routes:
-                    score = score_route(route)
+                    score = score_route(route, fare_type=fare_type, seat_type=seat_type)
                     scored_routes.append({
                         'name': route.get('name', 'Unnamed Route'),
                         'segments': route['segments'],
@@ -198,7 +216,13 @@ def route_compare_page(request: Request, origin: str | None = None, destination:
                         'actual_ride_minutes': sum(s['duration_seconds'] for s in route['segments']) / 60
                     })
                 
-                scored_routes.sort(key=lambda x: x['score']['total_seconds'])
+                # Sort routes based on sort_order
+                if sort_order == "cheapest":
+                    scored_routes.sort(key=lambda x: x['score']['total_fare'])
+                elif sort_order == "transfers":
+                    scored_routes.sort(key=lambda x: len([s for s in x['segments'] if s['type'] == 'transfer']))
+                else: # Default to fastest
+                    scored_routes.sort(key=lambda x: x['score']['total_seconds'])
     elif origin or destination:
         if not origin or not origin.strip():
             error_message = _("error_enter_origin")
@@ -211,6 +235,14 @@ def route_compare_page(request: Request, origin: str | None = None, destination:
         "request": request,
         "origin": origin or "",
         "destination": destination or "",
+        "transit": transit or "",
+        "date": date,
+        "time": time,
+        "time_type": time_type,
+        "fare_type": fare_type,
+        "seat_type": seat_type,
+        "walking_speed": walking_speed,
+        "sort_order": sort_order,
         "routes": scored_routes,
         "available_stations": available_stations,
         "error_message": error_message,
