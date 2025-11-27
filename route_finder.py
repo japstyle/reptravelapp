@@ -263,8 +263,8 @@ def _consolidate_segments(raw_route: List[Tuple[str, str, str]]) -> List[Dict[st
                 "type": "transfer",
                 "from_station": _get_display_name(current_to),
                 "to_station": _get_display_name(from_station),
-                "from_line": current_line,
-                "to_line": line_id,
+                "from_line": line_info_from.get('name', current_line),
+                "to_line": line_info_to.get('name', line_id),
                 "duration_seconds": 0,
                 "is_transfer": True,
                 "same_company_transfer": same_company
