@@ -14,8 +14,13 @@ TOKEN = os.getenv('ODPT_TOKEN')
 if not TOKEN:
     raise SystemExit('Set ODPT_TOKEN in .env')
 
+import tempfile
+
+# ... (existing imports) ...
+
 # Define the directory for storing data
-TMP_DIR = Path('/tmp')
+# Use tempfile.gettempdir() for cross-platform temporary directory
+TMP_DIR = Path(tempfile.gettempdir())
 
 # Define headers for the API request
 HEADERS = {'Accept': 'application/json'}
