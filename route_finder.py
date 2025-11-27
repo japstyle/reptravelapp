@@ -214,28 +214,23 @@ def _consolidate_segments(raw_route: List[Tuple[str, str, str]]) -> List[Dict[st
     current_line = raw_route[0][2]
     current_from = raw_route[0][0]
     current_to = raw_route[0][1]
-    lines_in_segment = [current_line]  # Track lines for through-service
-    segment_hops = [(raw_route[0][0], raw_route[0][1], raw_route[0][2])]  # Track all hops in segment
+    lines_in_segment = [current_line]
+    segment_hops = [(raw_route[0][0], raw_route[0][1], raw_route[0][2])]
     
     for i in range(1, len(raw_route)):
         from_station, to_station, line_id = raw_route[i]
         
         if line_id == current_line:
-            # Same line, continue
             current_to = to_station
             segment_hops.append((from_station, to_station, line_id))
         elif _has_through_service(current_line, line_id, current_to):
-            # Through-service: treat as continuous ride
             current_to = to_station
             current_line = line_id
             lines_in_segment.append(line_id)
             segment_hops.append((from_station, to_station, line_id))
         else:
-            # Different line without through-service: need transfer
-            # Calculate duration by summing all hops in the segment
             duration = sum(_estimate_ride_time(hop[0], hop[1], hop[2]) for hop in segment_hops)
             
-            # Build line display name
             if len(lines_in_segment) > 1:
                 line_info_first = _get_line_info(lines_in_segment[0])
                 line_info_last = _get_line_info(lines_in_segment[-1])
@@ -276,7 +271,6 @@ def _consolidate_segments(raw_route: List[Tuple[str, str, str]]) -> List[Dict[st
             lines_in_segment = [line_id]
             segment_hops = [(from_station, to_station, line_id)]
     
-    # Final segment
     duration = sum(_estimate_ride_time(hop[0], hop[1], hop[2]) for hop in segment_hops)
     
     if len(lines_in_segment) > 1:
@@ -305,14 +299,11 @@ def _generate_route_name(segments: List[Dict]) -> str:
     transfers = [s for s in segments if s["type"] == "transfer"]
     
     if not transfers:
-        # Check if it's a through-service route
         if segments and segments[0].get("through_service"):
             return "Direct (through-service)"
         else:
             line = segments[0]["line"] if segments else "Direct"
-            line_info = _get_line_info(line)
-            line_name = line_info.get("name", line.split(".")[-1] if "." in line else line)
-            return f"Direct ({line_name})"
+            return f"Direct ({line})"
     
     transfer_stations = [t["from_station"] for t in transfers]
     transfer_str = ", ".join(transfer_stations[:2])
@@ -325,48 +316,45 @@ def _generate_route_name(segments: List[Dict]) -> str:
 def find_routes(origin: str, destination: str, date: str | None = None, time: str | None = None, time_type: str = "departure") -> List[Dict[str, Any]]:
     """
     Find multiple route alternatives between origin and destination.
-    
-    Returns a list of route candidates, each with segments describing
-    the journey (riding + transfers).
     """
-    _load_network()
-    
-    raw_routes = _bfs_find_routes(origin, destination, date, time, time_type, max_routes=5, max_transfers=3)
 
-def _bfs_find_routes(origin: str, destination: str, date: str | None = None, time: str | None = None, time_type: str = "departure", max_routes: int = 5, max_transfers: int = 2) -> List[List[Tuple[str, str, str]]]:
-    
+    _load_network()
+
+    # Use the correct BFS function
+    raw_routes = _bfs_find_routes(origin, destination, max_routes=5, max_transfers=3)
+
+    # If BFS finds nothing → fallback routes
     if not raw_routes:
         return _fallback_routes(origin, destination)
-    
+
     routes = []
     seen_signatures = set()
-    
+
     for raw_route in raw_routes:
         segments = _consolidate_segments(raw_route)
-        
         if not segments:
             continue
-        
+
         transfer_stations = tuple(s["from_station"] for s in segments if s["type"] == "transfer")
         lines_used = tuple(s["line"] for s in segments if s["type"] == "ride")
         signature = (transfer_stations, lines_used)
-        
+
         if signature in seen_signatures:
             continue
+
         seen_signatures.add(signature)
-        
         route_name = _generate_route_name(segments)
-        
+
         routes.append({
             "name": route_name,
             "segments": segments
         })
-    
+
     routes.sort(key=lambda r: (
         len([s for s in r["segments"] if s["type"] == "transfer"]),
         sum(s["duration_seconds"] for s in r["segments"] if s["type"] == "ride")
     ))
-    
+
     return routes[:5]
 
 def _fallback_routes(origin: str, destination: str) -> List[Dict[str, Any]]:
