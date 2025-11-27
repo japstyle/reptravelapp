@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer-Aware Train Route App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon {
+            font-size: 72px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 48px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .example {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .example-title {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .comparison-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .comparison-item.winner {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .comparison-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .comparison-time {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .comparison-detail {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .secondary-links {
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .secondary-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .secondary-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 30px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="hero">
+            <div class="icon">🚉</div>
+            <h1>Transfer-Aware Routes</h1>
+            <p class="tagline">
+                Stop choosing routes based on speed alone.<br>
+                Find the route that <em>feels</em> fastest with easier transfers.
+            </p>
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🚶</div>
+                    <div class="feature-text">Walking Distance</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🪜</div>
+                    <div class="feature-text">Stairs & Floors</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-text">Crowd Levels</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-text">Platform Types</div>
+                </div>
+            </div>
+
+            <a href="/route-compare" class="cta-button">Compare Routes Now →</a>
+
+            <div class="example">
+                <div class="example-title">Example: Shibuya → Tokorozawa</div>
+                <div class="comparison">
+                    <div class="comparison-item">
+                        <div class="comparison-label">Via Ikebukuro</div>
+                        <div class="comparison-time">47 min</div>
+                        <div class="comparison-detail">
+                            380m walk • 2 floors • Crowded<br>
+                            Feels like: 11 min transfer
+                        </div>
+                    </div>
+                    <div class="comparison-item winner">
+                        <span class="winner-badge">✨ BETTER</span>
+                        <div class="comparison-label">Via Nerima</div>
+                        <div class="comparison-time">36.5 min</div>
+                        <div class="comparison-detail">
+                            45m walk • Same platform • Easy<br>
+                            Feels like: 30 sec transfer
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="secondary-links">
+                <a href="/search">Station Search</a>
+                <a href="/stations">API: Stations</a>
+                <a href="/lines">API: Lines</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

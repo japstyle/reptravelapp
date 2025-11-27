@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Station Search</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        
+        input {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .station {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .ja {
+            font-weight: bold;
+        }
+        
+        .en {
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Station Search (日本語 / English)</h1>
+
+    <form method="get">
+        <input type="text" name="q" placeholder="例: 渋谷 / Shibuya" value="{{ query }}" autocomplete="off">
+    </form>
+
+    {% if results %}
+    <h2>{{ results|length }} results</h2>
+    {% for st in results %}
+    <div class="station">
+        <div class="ja">{{ st.ja }}</div>
+        <div class="en">{{ st.en }}</div>
+        <div class="id" style="font-size:12px;color:#aaa">{{ st.id }}</div>
+    </div>
+    {% endfor %} {% elif query %}
+    <p>No results.</p>
+    {% endif %}
+
+</body>
+
+</html>

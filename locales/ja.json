@@ -1,0 +1,16 @@
+{
+    "busy_station_penalty": "混雑駅ペナルティ",
+    "transfer_penalties": "乗り換えペナルティ",
+    "same_company_bonus": "同社線ボーナス",
+    "best_option": "ベストオプション",
+    "felt_time": "体感時間",
+    "actual_time": "実時間",
+    "find_best_route": "乗り換えの便利さを考慮した最適なルートを見つけましょう",
+    "compare_routes": "ルートを比較",
+    "origin_station_placeholder": "出発駅（例：渋谷）",
+    "destination_station_placeholder": "到着駅（例：新宿）",
+    "error_station_not_found": "駅「{station_name}」が見つかりませんでした。候補から選択してください。",
+    "error_origin_destination_same": "出発駅と到着駅は異なる必要があります",
+    "error_enter_origin": "出発駅を入力してください",
+    "error_enter_destination": "到着駅を入力してください"
+}

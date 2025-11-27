@@ -1,0 +1,6 @@
+[
+    { "station": "Ikebukuro", "from_line": "Fukutoshin", "to_line": "Seibu", "distance_m": 380, "floors": 2, "stairs": 3, "escalators": 2, "crowd_factor": 1.4, "confusion_level": 3.5 },
+    { "station": "Nerima", "from_line": "Fukutoshin", "to_line": "Seibu", "distance_m": 45, "floors": 0, "stairs": 0, "escalators": 0, "crowd_factor": 1.1, "confusion_level": 0.5 },
+    { "station": "Iidabashi", "from_line": "Yurakucho", "to_line": "Tozai", "distance_m": 260, "floors": 1, "stairs": 2, "escalators": 1, "crowd_factor": 1.5, "confusion_level": 2.0 },
+    { "station": "Otemachi", "from_line": "Yurakucho", "to_line": "Tozai", "distance_m": 160, "floors": 0, "stairs": 1, "escalators": 2, "crowd_factor": 1.2, "confusion_level": 1.0 }
+]

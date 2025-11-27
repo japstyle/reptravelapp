@@ -1,0 +1,289 @@
+[
+  {
+    "@id": "urn:uuid:c83e6156-1cc5-42b9-8a2e-5d2311176a4b",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Ginza",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Ginza",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:0427b2c4-fd0f-40c6-91aa-90b9a66180e5",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Marunouchi",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Marunouchi",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:6ba19c8d-b5eb-445e-94fd-d5a1fa468b30",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.MarunouchiBranch",
+    "odpt:railway": "odpt.Railway:TokyoMetro.MarunouchiBranch",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:e1f5b865-e163-49ee-b271-3165497c1f49",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Hibiya",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Hibiya",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:timeOfOrigin": "2025-11-04T13:40:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:bed5f6d6-ff8c-45d4-9b3f-9fbc87f309fa",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Tozai",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Tozai",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:timeOfOrigin": "2025-11-25T11:49:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:e001d962-e4d8-4e9b-aac1-74f84f598924",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Chiyoda",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Chiyoda",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:timeOfOrigin": "2025-11-26T11:50:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:b75991e4-daec-45a8-b1b6-10577dd68342",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Yurakucho",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Yurakucho",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:timeOfOrigin": "2025-11-26T13:15:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:f439454d-5e16-449f-b999-c859e7417f8d",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Hanzomon",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Hanzomon",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:timeOfOrigin": "2025-11-26T14:35:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:474dd790-d18c-4b5c-b5a6-ba677b235f36",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Namboku",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Namboku",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:timeOfOrigin": "2025-11-26T15:21:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:5d68aee7-1459-4b8a-b782-61e8ea9e9fa2",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TokyoMetro.Fukutoshin",
+    "odpt:railway": "odpt.Railway:TokyoMetro.Fukutoshin",
+    "odpt:operator": "odpt.Operator:TokyoMetro",
+    "odpt:timeOfOrigin": "2025-11-26T18:35:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常どおり運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:c25a3626-47cc-401f-a5ad-698f593292fa",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:Toei.Asakusa",
+    "odpt:railway": "odpt.Railway:Toei.Asakusa",
+    "odpt:operator": "odpt.Operator:Toei",
+    "odpt:timeOfOrigin": "2025-11-25T10:57:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、１５分以上の遅延はありません。"
+    }
+  },
+  {
+    "@id": "urn:uuid:14077d4c-75fe-43bb-9392-5b8e6459fdda",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:Toei.Mita",
+    "odpt:railway": "odpt.Railway:Toei.Mita",
+    "odpt:operator": "odpt.Operator:Toei",
+    "odpt:timeOfOrigin": "2025-11-27T09:20:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、１５分以上の遅延はありません。"
+    }
+  },
+  {
+    "@id": "urn:uuid:6fec74f1-75b1-40b3-9a0a-a58aabfc0968",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:Toei.Shinjuku",
+    "odpt:railway": "odpt.Railway:Toei.Shinjuku",
+    "odpt:operator": "odpt.Operator:Toei",
+    "odpt:timeOfOrigin": "2025-11-25T19:49:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、１５分以上の遅延はありません。"
+    }
+  },
+  {
+    "@id": "urn:uuid:850344ee-ab21-4560-bcae-e67effcde979",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:Toei.Oedo",
+    "odpt:railway": "odpt.Railway:Toei.Oedo",
+    "odpt:operator": "odpt.Operator:Toei",
+    "odpt:trainInformationText": {
+      "ja": "現在、１５分以上の遅延はありません。"
+    }
+  },
+  {
+    "@id": "urn:uuid:2b4dcd19-02b3-4e87-8b71-f4a9c65e896d",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:Toei.Arakawa",
+    "odpt:railway": "odpt.Railway:Toei.Arakawa",
+    "odpt:operator": "odpt.Operator:Toei",
+    "odpt:timeOfOrigin": "2025-11-24T19:12:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、１５分以上の遅延はありません。"
+    }
+  },
+  {
+    "@id": "urn:uuid:dc770258-aba3-42cc-84bf-fc25412a42d7",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:Toei.NipporiToneri",
+    "odpt:railway": "odpt.Railway:Toei.NipporiToneri",
+    "odpt:operator": "odpt.Operator:Toei",
+    "odpt:timeOfOrigin": "2025-11-25T11:02:00+09:00",
+    "odpt:trainInformationText": {
+      "ja": "現在、１５分以上の遅延はありません。"
+    }
+  },
+  {
+    "@id": "urn:uuid:9b906148-955b-45da-b656-86302eb69ff1",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TWR.Rinkai",
+    "odpt:railway": "odpt.Railway:TWR.Rinkai",
+    "odpt:operator": "odpt.Operator:TWR",
+    "odpt:trainInformationText": {
+      "ja": "平常通り運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:d4cd7d66-003d-43ec-bf56-a759053a39cf",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:MIR.TsukubaExpress",
+    "odpt:railway": "odpt.Railway:MIR.TsukubaExpress",
+    "odpt:operator": "odpt.Operator:MIR",
+    "odpt:trainInformationText": {
+      "ja": "現在、平常通り運転しています。"
+    }
+  },
+  {
+    "@id": "urn:uuid:590f60ae-4eb4-4166-bf0d-e20839652e52",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:00+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:00+09:00",
+    "owl:sameAs": "odpt.TrainInformation:TamaMonorail.TamaMonorail",
+    "odpt:railway": "odpt.Railway:TamaMonorail.TamaMonorail",
+    "odpt:operator": "odpt.Operator:TamaMonorail",
+    "odpt:trainInformationText": {
+      "ja": "平常通り運転しております。"
+    }
+  },
+  {
+    "@id": "urn:uuid:223ffbc2-caef-4a26-9b46-b1f350554db0",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:01+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:01+09:00",
+    "owl:sameAs": "odpt.TrainInformation:YokohamaMunicipal.Blue",
+    "odpt:railway": "odpt.Railway:YokohamaMunicipal.Blue",
+    "odpt:operator": "odpt.Operator:YokohamaMunicipal",
+    "odpt:trainInformationText": {
+      "en": "Normal service",
+      "ja": "平常運行"
+    }
+  },
+  {
+    "@id": "urn:uuid:add95ca1-e951-4c9d-a871-adcd1d0b335d",
+    "@type": "odpt:TrainInformation",
+    "dc:date": "2025-11-27T11:50:01+09:00",
+    "@context": "http://vocab.odpt.org/context_odpt_TrainInformation.jsonld",
+    "dct:valid": "2025-11-27T11:55:01+09:00",
+    "owl:sameAs": "odpt.TrainInformation:YokohamaMunicipal.Green",
+    "odpt:railway": "odpt.Railway:YokohamaMunicipal.Green",
+    "odpt:operator": "odpt.Operator:YokohamaMunicipal",
+    "odpt:trainInformationText": {
+      "en": "Normal service",
+      "ja": "平常運行"
+    }
+  }
+]

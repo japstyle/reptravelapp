@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Find the best train routes in Tokyo with transfer-aware scoring">
+    <meta name="theme-color" content="#0066cc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="RouteOpt">
+    <link rel="manifest" href="/static/manifest.json">
+    <title>Tokyo Route Optimizer - Transfer-Aware Routes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Prevent pull-to-refresh on mobile */
+        body {
+            overscroll-behavior-y: contain;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-form input:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+
+        .search-form button {
+            padding: 12px 30px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-form button:hover {
+            background: #0052a3;
+        }
+
+        .routes-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .route-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .route-card.best {
+            border: 3px solid #00cc66;
+        }
+
+        .best-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #00cc66;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .route-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .route-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .route-times {
+            text-align: right;
+        }
+
+        .felt-time {
+            font-size: 28px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .actual-time {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .segments {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .segment {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            gap: 15px;
+        }
+
+        .segment-icon {
+            font-size: 24px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .segment-details {
+            flex: 1;
+        }
+
+        .segment-type {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .segment-route {
+            font-weight: 600;
+            color: #333;
+            margin: 3px 0;
+        }
+
+        .segment-line {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .segment-time {
+            text-align: right;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .transfer-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 8px 12px;
+            margin-top: 5px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        .transfer-easy {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 8px 12px;
+            margin-top: 5px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #155724;
+        }
+
+        .score-breakdown {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .score-breakdown-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .score-items {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+
+        .score-item {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .score-label {
+            color: #666;
+        }
+
+        .score-value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .no-routes {
+            background: white;
+            padding: 60px;
+            text-align: center;
+            border-radius: 8px;
+            color: #666;
+        }
+
+        .no-routes-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .autocomplete-container {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #0066cc;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.selected {
+            background: #f0f7ff;
+        }
+
+        .autocomplete-item-en {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .autocomplete-item-ja {
+            font-size: 13px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .autocomplete-no-results {
+            padding: 12px 15px;
+            color: #999;
+            font-style: italic;
+        }
+        
+        .install-prompt {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .install-prompt.show {
+            display: flex;
+        }
+        
+        .install-prompt-text {
+            flex: 1;
+        }
+        
+        .install-prompt-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .install-prompt-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .install-button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .install-button:active {
+            transform: scale(0.95);
+        }
+        
+        .close-install {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+        }
+        
+        .close-install:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .container {
+                padding: 0;
+            }
+
+            header {
+                border-radius: 0;
+                padding: 20px 15px;
+                margin-bottom: 0;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            h1 {
+                font-size: 20px;
+                margin-bottom: 5px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            .search-form {
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .search-form input,
+            .autocomplete-container {
+                min-width: 100%;
+            }
+
+            .search-form input {
+                padding: 14px 15px;
+                font-size: 16px;
+                border-radius: 8px;
+            }
+
+            .search-form button {
+                width: 100%;
+                padding: 16px;
+                font-size: 18px;
+                font-weight: 600;
+                border-radius: 8px;
+                margin-top: 5px;
+            }
+
+            .station-hint {
+                font-size: 11px;
+                margin-top: 8px;
+            }
+
+            .error-message {
+                margin-top: 12px;
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .routes-container {
+                gap: 0;
+                padding: 10px 0;
+            }
+
+            .route-card {
+                border-radius: 0;
+                padding: 20px 15px;
+                margin-bottom: 10px;
+                box-shadow: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .route-card.best {
+                border: none;
+                border-left: 4px solid #00cc66;
+                background: #f0fff8;
+            }
+
+            .best-badge {
+                top: 10px;
+                right: 10px;
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+
+            .route-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding-bottom: 12px;
+            }
+
+            .route-name {
+                font-size: 18px;
+                padding-right: 80px;
+            }
+
+            .route-times {
+                text-align: left;
+                width: 100%;
+            }
+
+            .felt-time {
+                font-size: 32px;
+                display: inline-block;
+                margin-right: 10px;
+            }
+
+            .actual-time {
+                display: inline-block;
+                font-size: 13px;
+                vertical-align: bottom;
+                margin-bottom: 5px;
+            }
+
+            .segments {
+                gap: 8px;
+            }
+
+            .segment {
+                padding: 12px 10px;
+                gap: 12px;
+                border-radius: 8px;
+            }
+
+            .segment-icon {
+                font-size: 22px;
+                min-width: 28px;
+            }
+
+            .segment-type {
+                font-size: 11px;
+            }
+
+            .segment-route {
+                font-size: 15px;
+                margin: 2px 0;
+            }
+
+            .segment-line {
+                font-size: 12px;
+            }
+
+            .segment-time {
+                font-size: 16px;
+                min-width: 50px;
+            }
+
+            .transfer-warning,
+            .transfer-easy {
+                padding: 6px 10px;
+                font-size: 12px;
+                margin-top: 4px;
+            }
+
+            .score-breakdown {
+                margin-top: 15px;
+                padding-top: 15px;
+            }
+
+            .score-breakdown-title {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            .score-items {
+                gap: 15px;
+                font-size: 12px;
+            }
+
+            .no-routes {
+                padding: 40px 20px;
+                margin: 20px 15px;
+                border-radius: 12px;
+            }
+
+            .no-routes-icon {
+                font-size: 48px;
+                margin-bottom: 15px;
+            }
+
+            .no-routes h2 {
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+
+            .no-routes p {
+                font-size: 14px;
+            }
+
+            .autocomplete-dropdown {
+                max-height: 250px;
+                border-radius: 0 0 8px 8px;
+            }
+
+            .autocomplete-item {
+                padding: 14px 15px;
+            }
+
+            .autocomplete-item-en {
+                font-size: 16px;
+            }
+
+            .autocomplete-item-ja {
+                font-size: 14px;
+            }
+
+            /* Improve touch targets */
+            .autocomplete-item {
+                min-height: 44px;
+            }
+
+            /* Prevent zoom on input focus (iOS) */
+            .search-form input {
+                font-size: 16px;
+            }
+
+            /* Better scrolling on mobile */
+            .autocomplete-dropdown {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* Small phones */
+        @media (max-width: 375px) {
+            header {
+                padding: 15px 12px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            .route-card {
+                padding: 15px 12px;
+            }
+
+            .felt-time {
+                font-size: 28px;
+            }
+
+            .segment {
+                padding: 10px 8px;
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            header {
+                position: relative;
+            }
+
+            .autocomplete-dropdown {
+                max-height: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚉 Transfer-Aware Route Comparison</h1>
+            <p class="subtitle">{{ _('find_best_route') }}</p>
+
+            <form class="search-form" method="get" id="route-form">
+                <div class="autocomplete-container">
+                    <input type="text" name="origin" id="origin-input" 
+                           placeholder="{{ _('origin_station_placeholder') }}" 
+                           value="{{ origin }}"
+                           required autocomplete="off"
+                           aria-autocomplete="list"
+                           aria-expanded="false"
+                           role="combobox">
+                    <div class="autocomplete-dropdown" id="origin-dropdown" role="listbox"></div>
+                </div>
+                
+                <div class="autocomplete-container">
+                    <input type="text" name="destination" id="destination-input"
+                           placeholder="{{ _('destination_station_placeholder') }}"
+                           value="{{ destination }}"
+                           required autocomplete="off"
+                           aria-autocomplete="list"
+                           aria-expanded="false"
+                           role="combobox">
+                    <div class="autocomplete-dropdown" id="destination-dropdown" role="listbox"></div>
+                </div>
+                
+                <button type="submit">{{ _('compare_routes') }}</button>
+            </form>
+            
+            <div class="station-hint" style="margin-top: 10px; font-size: 12px; color: #666;">
+                Available stations include: Tokyo, Shinjuku, Shibuya, Ikebukuro, Ueno, Yokohama, and more.
+                Start typing to see suggestions.
+            </div>
+            
+            {% if error_message %}
+            <div class="error-message" style="margin-top: 15px; padding: 12px; background: #fee; border-left: 4px solid #c33; border-radius: 4px; color: #c33;">
+                ⚠️ {{ error_message }}
+            </div>
+            {% endif %}
+            
+            <div class="install-prompt" id="install-prompt">
+                <div class="install-prompt-text">
+                    <div class="install-prompt-title">📱 Install App</div>
+                    <div class="install-prompt-subtitle">Add to home screen for quick access</div>
+                </div>
+                <button class="install-button" id="install-button">Install</button>
+                <button class="close-install" id="close-install">×</button>
+            </div>
+        </header>
+
+        {% if routes %}
+        <div class="routes-container">
+            {% for route in routes %}
+            <div class="route-card {% if loop.index == 1 %}best{% endif %}">
+                {% if loop.index == 1 %}
+                <span class="best-badge">✨ {{ _('best_option') }}</span>
+                {% endif %}
+
+                <div class="route-header">
+                    <div>
+                        <div class="route-name">{{ route.name }}</div>
+                    </div>
+                    <div class="route-times">
+                        <div class="felt-time">{{ route.total_minutes }} min</div>
+                        <div class="actual-time">
+                            ({{ _('actual_time') }}: {{ route.actual_ride_minutes|round(1) }} min)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="segments">
+                    {% for seg in route.segments %}
+                    <div class="segment">
+                        <div class="segment-icon">
+                            {% if seg.type == 'ride' %}
+                            🚇
+                            {% else %}
+                            🚶
+                            {% endif %}
+                        </div>
+                        <div class="segment-details">
+                            <div class="segment-type">{{ seg.type }}</div>
+                            <div class="segment-route">
+                                {{ seg.from_station }}
+                                {% if seg.type == 'ride' %}
+                                → {{ seg.to_station }}
+                                {% endif %}
+                            </div>
+                            <div class="segment-line">
+                                {% if seg.type == 'ride' %}
+                                {{ seg.line }}
+                                {% if seg.delay_info %}
+                                <div class="delay-info" style="color: red; font-weight: bold; margin-top: 4px;">
+                                    ⚠️ {{ seg.delay_info }}
+                                </div>
+                                {% endif %}
+                                {% else %}
+                                {{ seg.from_line }} → {{ seg.to_line }}
+                                {% endif %}
+                            </div>
+
+                            {% if seg.type == 'transfer' %}
+                            {% set transfer_score = route.score.segments[loop.index0].transfer_penalty %}
+                            {% if transfer_score > 200 %}
+                            <div class="transfer-warning">
+                                ⚠️ Complex transfer ({{ (transfer_score/60)|round(1) }} min)
+                            </div>
+                            {% elif transfer_score < 100 %}
+                            <div class="transfer-easy">
+                                ✓ Easy transfer ({{ (transfer_score/60)|round(1) }} min)
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="segment-time">
+                            {% if seg.type == 'ride' %}
+                            {{ (seg.duration_seconds / 60)|round(0)|int }} min
+                            {% else %}
+                            {{ (route.score.segments[loop.index0].transfer_penalty / 60)|round(1) }} min
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="score-breakdown">
+                    <div class="score-breakdown-title">Score Breakdown:</div>
+                    <div class="score-items">
+                        {% set total_transfer = route.score.segments|map(attribute='transfer_penalty')|sum %}
+                        {% set total_hell = route.score.segments|map(attribute='hell_penalty')|sum %}
+                        {% set total_bonus = route.score.segments|map(attribute='same_company_bonus')|sum %}
+
+                        <div class="score-item">
+                            <span class="score-label">{{ _('transfer_penalties') }}:</span>
+                            <span class="score-value">+{{ (total_transfer/60)|round(1) }} min</span>
+                        </div>
+                        {% if total_hell > 0 %}
+                        <div class="score-item">
+                            <span class="score-label">{{ _('busy_station_penalty') }}:</span>
+                            <span class="score-value">+{{ (total_hell/60)|round(1) }} min</span>
+                        </div>
+                        {% endif %}
+                        {% if total_bonus < 0 %}
+                        <div class="score-item">
+                            <span class="score-label">{{ _('same_company_bonus') }}:</span>
+                            <span class="score-value">{{ (total_bonus/60)|round(1) }} min</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% elif origin and destination %}
+        <div class="no-routes">
+            <div class="no-routes-icon">🗺️</div>
+            <h2>No routes found</h2>
+            <p>Try "Shibuya" to "Tokorozawa" for a demo of the transfer comparison feature.</p>
+        </div>
+        {% else %}
+        <div class="no-routes">
+            <div class="no-routes-icon">👋</div>
+            <h2>Welcome!</h2>
+            <p>Enter an origin and destination above to compare routes.</p>
+            <p style="margin-top: 10px; font-size: 14px;">💡 Try: <strong>Shibuya → Tokorozawa</strong></p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <script>
+        // Load station data
+        let stationsData = [];
+        
+        // Fetch stations on page load
+        fetch('/api/network-stations')
+            .then(response => response.json())
+            .then(data => {
+                stationsData = data.stations;
+                console.log('Loaded', stationsData.length, 'stations');
+            })
+            .catch(error => {
+                console.error('Failed to load stations:', error);
+            });
+        
+        // Filter stations based on query
+        function filterStations(query, stations) {
+            if (!query || query.length < 2) {
+                return [];
+            }
+            
+            const queryLower = query.toLowerCase();
+            return stations.filter(station => {
+                const enMatch = station.name_en.toLowerCase().includes(queryLower);
+                const jaMatch = station.name_ja && station.name_ja.includes(query);
+                return enMatch || jaMatch;
+            }).slice(0, 10); // Limit to 10 results
+        }
+        
+        // Show autocomplete dropdown
+        function showAutocomplete(matches, inputElement, dropdownElement) {
+            dropdownElement.innerHTML = '';
+            
+            if (matches.length === 0) {
+                dropdownElement.innerHTML = '<div class="autocomplete-no-results">No stations found</div>';
+                dropdownElement.classList.add('show');
+                inputElement.setAttribute('aria-expanded', 'true');
+                return;
+            }
+            
+            matches.forEach((station, index) => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.setAttribute('role', 'option');
+                item.setAttribute('data-station-id', station.id);
+                item.setAttribute('data-station-name', station.name_en);
+                item.innerHTML = `
+                    <div class="autocomplete-item-en">${station.name_en}</div>
+                    ${station.name_ja ? `<div class="autocomplete-item-ja">${station.name_ja}</div>` : ''}
+                `;
+                
+                item.addEventListener('click', () => {
+                    selectStation(station, inputElement, dropdownElement);
+                });
+                
+                dropdownElement.appendChild(item);
+            });
+            
+            dropdownElement.classList.add('show');
+            inputElement.setAttribute('aria-expanded', 'true');
+        }
+        
+        // Hide autocomplete dropdown
+        function hideAutocomplete(dropdownElement, inputElement) {
+            dropdownElement.classList.remove('show');
+            inputElement.setAttribute('aria-expanded', 'false');
+            // Clear selected state
+            const items = dropdownElement.querySelectorAll('.autocomplete-item');
+            items.forEach(item => item.classList.remove('selected'));
+        }
+        
+        // Select a station
+        function selectStation(station, inputElement, dropdownElement) {
+            inputElement.value = station.name_en;
+            hideAutocomplete(dropdownElement, inputElement);
+        }
+        
+        // Setup autocomplete for an input
+        function setupAutocomplete(inputId, dropdownId) {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+            
+            if (!input || !dropdown) return;
+            
+            let selectedIndex = -1;
+            
+            // Input event - filter and show results
+            input.addEventListener('input', (e) => {
+                const query = e.target.value;
+                const matches = filterStations(query, stationsData);
+                showAutocomplete(matches, input, dropdown);
+                selectedIndex = -1;
+            });
+            
+            // Focus event - show results if there's a query
+            input.addEventListener('focus', (e) => {
+                const query = e.target.value;
+                if (query.length >= 2) {
+                    const matches = filterStations(query, stationsData);
+                    showAutocomplete(matches, input, dropdown);
+                }
+            });
+            
+            // Blur event - hide dropdown after a delay (to allow clicks)
+            input.addEventListener('blur', () => {
+                setTimeout(() => {
+                    hideAutocomplete(dropdown, input);
+                    selectedIndex = -1;
+                }, 200);
+            });
+            
+            // Keyboard navigation
+            input.addEventListener('keydown', (e) => {
+                const items = dropdown.querySelectorAll('.autocomplete-item');
+                
+                if (items.length === 0) return;
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                    updateSelection(items, selectedIndex, input);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedIndex = Math.max(selectedIndex - 1, 0);
+                    updateSelection(items, selectedIndex, input);
+                } else if (e.key === 'Enter') {
+                    if (selectedIndex >= 0 && selectedIndex < items.length) {
+                        e.preventDefault();
+                        const selectedItem = items[selectedIndex];
+                        const stationName = selectedItem.getAttribute('data-station-name');
+                        const station = stationsData.find(s => s.name_en === stationName);
+                        if (station) {
+                            selectStation(station, input, dropdown);
+                        }
+                    }
+                } else if (e.key === 'Escape') {
+                    hideAutocomplete(dropdown, input);
+                    selectedIndex = -1;
+                }
+            });
+        }
+        
+        // Update visual selection for keyboard navigation
+        function updateSelection(items, index, input) {
+            items.forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest' });
+                    input.setAttribute('aria-activedescendant', item.getAttribute('data-station-id'));
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+        
+        // Initialize autocomplete for both inputs
+        setupAutocomplete('origin-input', 'origin-dropdown');
+        setupAutocomplete('destination-input', 'destination-dropdown');
+        
+        // Register service worker for PWA support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+        
+        // PWA Install prompt
+        let deferredPrompt;
+        const installPrompt = document.getElementById('install-prompt');
+        const installButton = document.getElementById('install-button');
+        const closeInstall = document.getElementById('close-install');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Check if user has dismissed the prompt before
+            if (!localStorage.getItem('installPromptDismissed')) {
+                installPrompt.classList.add('show');
+            }
+        });
+        
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            console.log(`User response: ${outcome}`);
+            deferredPrompt = null;
+            installPrompt.classList.remove('show');
+        });
+        
+        closeInstall.addEventListener('click', () => {
+            installPrompt.classList.remove('show');
+            localStorage.setItem('installPromptDismissed', 'true');
+        });
+        
+        // Hide install prompt if already installed
+        window.addEventListener('appinstalled', () => {
+            installPrompt.classList.remove('show');
+            console.log('PWA installed successfully');
+        });
+    </script>
+</body>
+
+</html>

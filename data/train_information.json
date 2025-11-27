@@ -1,0 +1,23 @@
+{
+  "odpt.TrainInformation:TokyoMetro.Ginza": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.Marunouchi": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.MarunouchiBranch": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.Hibiya": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.Tozai": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.Chiyoda": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.Yurakucho": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.Hanzomon": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.Namboku": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:TokyoMetro.Fukutoshin": "現在、平常どおり運転しています。",
+  "odpt.TrainInformation:Toei.Asakusa": "現在、１５分以上の遅延はありません。",
+  "odpt.TrainInformation:Toei.Mita": "現在、１５分以上の遅延はありません。",
+  "odpt.TrainInformation:Toei.Shinjuku": "現在、１５分以上の遅延はありません。",
+  "odpt.TrainInformation:Toei.Oedo": "現在、１５分以上の遅延はありません。",
+  "odpt.TrainInformation:Toei.Arakawa": "現在、１５分以上の遅延はありません。",
+  "odpt.TrainInformation:Toei.NipporiToneri": "現在、１５分以上の遅延はありません。",
+  "odpt.TrainInformation:TWR.Rinkai": "平常通り運転しています。",
+  "odpt.TrainInformation:MIR.TsukubaExpress": "現在、平常通り運転しています。",
+  "odpt.TrainInformation:TamaMonorail.TamaMonorail": "平常通り運転しております。",
+  "odpt.TrainInformation:YokohamaMunicipal.Blue": "平常運行",
+  "odpt.TrainInformation:YokohamaMunicipal.Green": "平常運行"
+}
