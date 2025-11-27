@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-
+{% import 'icons.html' as icons %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -20,11 +20,16 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f5f5f5;
+            background: #f8f8f8;
             padding: 20px;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .header-icon {
+            vertical-align: middle;
+            margin-right: 8px;
         }
         
         /* Prevent pull-to-refresh on mobile */
@@ -66,20 +71,22 @@
             flex: 1;
             min-width: 200px;
             padding: 12px 15px;
-            border: 2px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 6px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .search-form input:focus {
             outline: none;
-            border-color: #0066cc;
+            border-color: #4a90e2;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
         }
 
         .search-form button {
             padding: 12px 30px;
-            background: #0066cc;
+            background: #4a90e2;
             color: white;
             border: none;
             border-radius: 6px;
@@ -89,7 +96,7 @@
         }
 
         .search-form button:hover {
-            background: #0052a3;
+            background: #3a7ad1;
         }
 
         .routes-container {
@@ -106,14 +113,14 @@
         }
 
         .route-card.best {
-            border: 3px solid #00cc66;
+            border: 3px solid #66bb6a;
         }
 
         .best-badge {
             position: absolute;
             top: 15px;
             right: 15px;
-            background: #00cc66;
+            background: #66bb6a;
             color: white;
             padding: 6px 12px;
             border-radius: 20px;
@@ -143,7 +150,7 @@
         .felt-time {
             font-size: 28px;
             font-weight: bold;
-            color: #0066cc;
+            color: #4a90e2;
         }
 
         .actual-time {
@@ -168,9 +175,11 @@
         }
 
         .segment-icon {
-            font-size: 24px;
             min-width: 30px;
             text-align: center;
+        }
+        .segment-icon .icon {
+            vertical-align: middle;
         }
 
         .segment-details {
@@ -201,24 +210,28 @@
             color: #0066cc;
         }
 
+        .transfer-warning .icon, .transfer-easy .icon, .delay-info .icon {
+            vertical-align: bottom;
+            margin-right: 4px;
+        }
         .transfer-warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
+            background: #fffbe6;
+            border-left: 4px solid #f0ad4e;
             padding: 8px 12px;
             margin-top: 5px;
             border-radius: 4px;
             font-size: 13px;
-            color: #856404;
+            color: #8a6d3b;
         }
 
         .transfer-easy {
-            background: #d4edda;
-            border-left: 4px solid #28a745;
+            background: #e6ffe6;
+            border-left: 4px solid #66bb6a;
             padding: 8px 12px;
             margin-top: 5px;
             border-radius: 4px;
             font-size: 13px;
-            color: #155724;
+            color: #3c763d;
         }
 
         .score-breakdown {
@@ -265,8 +278,14 @@
         }
 
         .no-routes-icon {
-            font-size: 64px;
             margin-bottom: 20px;
+        }
+        .no-routes-svg {
+            color: #999;
+        }
+        .icon-hint {
+            vertical-align: middle;
+            margin-right: 4px;
         }
 
         .autocomplete-container {
@@ -329,7 +348,7 @@
         }
         
         .install-prompt {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #4a90e2;
             color: white;
             padding: 15px 20px;
             margin: 15px 0;
@@ -360,7 +379,7 @@
         
         .install-button {
             background: white;
-            color: #667eea;
+            color: #4a90e2;
             border: none;
             padding: 10px 20px;
             border-radius: 6px;
@@ -661,7 +680,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>🚉 Transfer-Aware Route Comparison</h1>
+            <h1>{{ icons.train(size=28, class='header-icon') }} Transfer-Aware Route Comparison</h1>
             <p class="subtitle">{{ _('find_best_route') }}</p>
 
             <form class="search-form" method="get" id="route-form">
@@ -716,7 +735,7 @@
             {% for route in routes %}
             <div class="route-card {% if loop.index == 1 %}best{% endif %}">
                 {% if loop.index == 1 %}
-                <span class="best-badge">✨ {{ _('best_option') }}</span>
+                <span class="best-badge">{{ icons.star(size=16) }} {{ _('best_option') }}</span>
                 {% endif %}
 
                 <div class="route-header">
@@ -736,9 +755,9 @@
                     <div class="segment">
                         <div class="segment-icon">
                             {% if seg.type == 'ride' %}
-                            🚇
+                            {{ icons.train(size=24, class='icon-train') }}
                             {% else %}
-                            🚶
+                            {{ icons.walk(size=24, class='icon-walk') }}
                             {% endif %}
                         </div>
                         <div class="segment-details">
@@ -754,7 +773,7 @@
                                 {{ seg.line }}
                                 {% if seg.delay_info %}
                                 <div class="delay-info" style="color: red; font-weight: bold; margin-top: 4px;">
-                                    ⚠️ {{ seg.delay_info }}
+                                    {{ icons.alert_triangle(size=16, class='icon-warning') }} {{ seg.delay_info }}
                                 </div>
                                 {% endif %}
                                 {% else %}
@@ -766,11 +785,11 @@
                             {% set transfer_score = route.score.segments[loop.index0].transfer_penalty %}
                             {% if transfer_score > 200 %}
                             <div class="transfer-warning">
-                                ⚠️ Complex transfer ({{ (transfer_score/60)|round(1) }} min)
+                                {{ icons.alert_triangle(size=16, class='icon-warning') }} Complex transfer ({{ (transfer_score/60)|round(1) }} min)
                             </div>
                             {% elif transfer_score < 100 %}
                             <div class="transfer-easy">
-                                ✓ Easy transfer ({{ (transfer_score/60)|round(1) }} min)
+                                {{ icons.check(size=16, class='icon-check') }} Easy transfer ({{ (transfer_score/60)|round(1) }} min)
                             </div>
                             {% endif %}
                             {% endif %}
@@ -816,13 +835,13 @@
         </div>
         {% elif origin and destination %}
         <div class="no-routes">
-            <div class="no-routes-icon">🗺️</div>
+            <div class="no-routes-icon">Map Icon</div>
             <h2>No routes found</h2>
             <p>Try "Shibuya" to "Tokorozawa" for a demo of the transfer comparison feature.</p>
         </div>
         {% else %}
         <div class="no-routes">
-            <div class="no-routes-icon">👋</div>
+            <div class="no-routes-icon">Hand Wave Icon</div>
             <h2>Welcome!</h2>
             <p>Enter an origin and destination above to compare routes.</p>
             <p style="margin-top: 10px; font-size: 14px;">💡 Try: <strong>Shibuya → Tokorozawa</strong></p>

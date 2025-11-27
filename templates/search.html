@@ -6,37 +6,83 @@
     <title>Station Search</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
             padding: 20px;
-            max-width: 600px;
+            max-width: 700px;
             margin: auto;
+            line-height: 1.6;
         }
         
         input {
-            padding: 10px;
+            padding: 12px 15px;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
+            outline: none;
         }
         
         .station {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
         }
         
         .ja {
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #333;
         }
         
         .en {
             color: #666;
+            font-size: 0.9em;
+        }
+
+        .id {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        h2 {
+            color: #555;
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
     </style>
 </head>
 
 <body>
+    <div class="container">
 
-    <h1>Station Search (日本語 / English)</h1>
+        <h1>Station Search (日本語 / English)</h1>
 
     <form method="get">
         <input type="text" name="q" placeholder="例: 渋谷 / Shibuya" value="{{ query }}" autocomplete="off">
@@ -54,6 +100,7 @@
     <p>No results.</p>
     {% endif %}
 
+    </div>
 </body>
 
 </html>
