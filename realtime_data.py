@@ -15,13 +15,12 @@ if not TOKEN:
     raise SystemExit('Set ODPT_TOKEN in .env')
 
 # Define the directory for storing data
-DATA_DIR = Path('data')
-DATA_DIR.mkdir(exist_ok=True)
+TMP_DIR = Path('/tmp')
 
 # Define headers for the API request
 HEADERS = {'Accept': 'application/json'}
-CACHE_FILE = DATA_DIR / 'train_information.json'
-RAW_CACHE_FILE = DATA_DIR / 'train_information_raw.json'
+CACHE_FILE = TMP_DIR / 'train_information.json'
+RAW_CACHE_FILE = TMP_DIR / 'train_information_raw.json'
 CACHE_DURATION_SECONDS = 5 * 60  # 5 minutes
 
 def _process_train_info_to_dict(train_info):
