@@ -423,7 +423,7 @@
 
             header {
                 border-radius: 0;
-                padding: 20px 15px;
+                padding: 15px; /* Slightly less padding */
                 margin-bottom: 0;
                 position: sticky;
                 top: 0;
@@ -449,6 +449,18 @@
             .search-form input,
             .autocomplete-container {
                 min-width: 100%;
+            }
+
+            .search-options {
+                flex-direction: column; /* Stack vertically */
+                gap: 8px !important; /* Reduced gap, use !important to override inline style */
+                margin-top: 15px !important; /* Adjust margin */
+            }
+
+            .search-options input,
+            .search-options select {
+                width: 100% !important; /* Full width for better stacking */
+                min-width: unset !important; /* Remove min-width constraint */
             }
 
             .search-form input {

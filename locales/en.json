@@ -9,8 +9,22 @@
     "compare_routes": "Compare Routes",
     "origin_station_placeholder": "Origin station (e.g., Shibuya)",
     "destination_station_placeholder": "Destination station (e.g., Shinjuku)",
+    "transit_station_placeholder": "Transit station (Optional)",
     "error_station_not_found": "Station '{station_name}' not found. Please select from the suggestions.",
     "error_origin_destination_same": "Origin and destination must be different stations",
     "error_enter_origin": "Please enter an origin station",
-    "error_enter_destination": "Please enter a destination station"
+    "error_enter_destination": "Please enter a destination station",
+    "depart_at": "Depart At",
+    "arrive_by": "Arrive By",
+    "ic_card": "IC Card",
+    "cash_fare": "Cash Fare",
+    "unreserved": "Unreserved Seat",
+    "reserved_seat": "Reserved Seat",
+    "green_car": "Green Car",
+    "normal_walk": "Normal Walk",
+    "fast_walk": "Fast Walk",
+    "slow_walk": "Slow Walk",
+    "fastest_arrival": "Fastest Arrival",
+    "fewest_transfers": "Fewest Transfers",
+    "cheapest_fare": "Cheapest Fare"
 }
